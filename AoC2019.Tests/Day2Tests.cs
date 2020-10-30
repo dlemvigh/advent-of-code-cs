@@ -35,10 +35,10 @@ namespace AoC2019.Tests.Day2.cs
             var runner = new IntCode("1,2,3");
 
             // Act
-            runner.Write(0, 42);
+            runner.WritePosition(0, 42);
             Assert.Equal(42, runner._program[0]);
 
-            runner.Write(2, 13);
+            runner.WritePosition(2, 13);
             Assert.Equal(13, runner._program[2]);
 
             // Assert

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AoC2019.Day2
@@ -8,12 +9,24 @@ namespace AoC2019.Day2
         internal readonly int[] _program;
         internal int _p;
         internal bool _isHalted;
+        internal readonly LinkedList<int> _inputs = new LinkedList<int>();
+        internal readonly LinkedList<int> _outputs = new LinkedList<int>();
+        internal int _opcode;
+        internal int _rm;
+        internal readonly int[] _readmode = new int[3];
 
         public IntCode(string program) {
             _program = program.Split(',').Select(int.Parse).ToArray();
         }
 
         public string Program => string.Join(",", _program);
+        public int Out => _outputs.Last();
+
+        public void In(params int[] inputs) {
+            foreach(var input in inputs) {
+                _inputs.AddLast(input);
+            }            
+        }
 
         public void RunUntilHalt() {
             while(_isHalted == false) {
@@ -27,31 +40,59 @@ namespace AoC2019.Day2
         }
 
         internal Action ReadNextOp() {
-            var opcode = ReadImmediate();
-            switch(opcode) {
+            _opcode = ReadImmediate();
+            var op = ParseParameterMode(_opcode);
+
+            switch(op) {
                 case 1:
                     return Add;
                 case 2:
                     return Multiply;
+                case 3:
+                    return Input;
+                case 4: 
+                    return Output;
                 case 99:
                 default:
                     return Halt;;
             }            
         }
 
+        internal int ParseParameterMode(int opcode) {
+            var op = opcode % 100;
+            
+            _rm = 0;
+            _readmode[0] = (opcode / 100) % 10;
+            _readmode[1] = (opcode / 1000) % 10;
+            _readmode[2] = (opcode / 10000) % 10;
+
+            return op;
+        }
+
         #region opcodes
         internal void Add() {
-            var a = ReadPosition();
-            var b = ReadPosition();
+            var a = Read();
+            var b = Read();
             var c = a + b;
             Write(c);
         }
 
         internal void Multiply() {
-            var a = ReadPosition();
-            var b = ReadPosition();
+            var a = Read();
+            var b = Read();
             var c = a * b;
             Write(c);
+        }
+
+        internal void Input() {
+            var value = _inputs.First();
+            _inputs.RemoveFirst();
+            Write(value);
+        }
+
+        internal void Output() {
+            var value = Read();
+            _outputs.AddLast(value);
         }
 
         internal void Halt() {
@@ -59,9 +100,23 @@ namespace AoC2019.Day2
         }
         #endregion
 
+        internal int Read() {
+            var readmode = _readmode[_rm++];
+            switch (readmode) {
+                default:
+                case 0:
+                    return ReadPosition();
+                case 1:
+                    return ReadImmediate();
+            }
+        }
         internal int ReadPosition() {
             var addr = ReadImmediate();
-            return _program[addr];
+            try {
+                return _program[addr];
+            } catch(Exception) {
+                throw;
+            }
         }
 
         internal int ReadImmediate() {
@@ -70,10 +125,10 @@ namespace AoC2019.Day2
 
         internal void Write(int value) {
             var addr = ReadImmediate();
-            Write(addr, value);
+            WritePosition(addr, value);
         }
 
-        internal void Write(int addr, int value) {
+        internal void WritePosition(int addr, int value) {
             _program[addr] = value;
         }
 
