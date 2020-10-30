@@ -44,14 +44,14 @@ namespace AoC2019.Day2
             var op = ParseParameterMode(_opcode);
 
             switch(op) {
-                case 1:
-                    return Add;
-                case 2:
-                    return Multiply;
-                case 3:
-                    return Input;
-                case 4: 
-                    return Output;
+                case 1: return Add;
+                case 2: return Multiply;
+                case 3: return Input;
+                case 4: return Output;
+                case 5: return JumpIfTrue;
+                case 6: return JumpIfFalse;
+                case 7: return LessThan;
+                case 8: return Equal;
                 case 99:
                 default:
                     return Halt;;
@@ -93,6 +93,36 @@ namespace AoC2019.Day2
         internal void Output() {
             var value = Read();
             _outputs.AddLast(value);
+        }
+
+        internal void JumpIfTrue() {
+            var value = Read();
+            var addr = Read();
+            if (value != 0) {
+                _p = addr;
+            }
+        }
+
+        internal void JumpIfFalse() {
+            var value = Read();
+            var addr = Read();
+            if (value == 0) {
+                _p = addr;
+            }
+        }
+
+        internal void LessThan() {
+            var a = Read();
+            var b = Read();
+            var result = a < b ? 1 : 0;
+            Write(result);
+        }
+
+        internal void Equal() {
+            var a = Read();
+            var b = Read();
+            var result = a == b ? 1 : 0;
+            Write(result);
         }
 
         internal void Halt() {
