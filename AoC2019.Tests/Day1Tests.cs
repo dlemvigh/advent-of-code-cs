@@ -1,8 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
+using AoC2019.Tests;
 using Xunit;
 
-namespace AoC2019.Tests
+namespace AoC2019.Day1.Tests
 {
     public class Day1Tests
     {

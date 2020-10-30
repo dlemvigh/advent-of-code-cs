@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Day9y2018 {
+namespace AoC2019.Day9y2018 {
 	public class ListNode {
 		public int value;
 		public ListNode next;

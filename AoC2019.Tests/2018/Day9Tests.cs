@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Day9y2018;
+using AoC2019.Day9y2018;
 using Xunit;
 
 namespace AoC2019.Tests

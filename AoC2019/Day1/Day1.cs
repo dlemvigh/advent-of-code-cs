@@ -1,6 +1,6 @@
 using System;
 
-namespace AoC2019
+namespace AoC2019.Day1
 {
     public class Day1
     {
